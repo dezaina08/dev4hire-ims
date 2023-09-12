@@ -1,25 +1,59 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+    import InputError from '@/Components/InputError.vue';
+    import InputLabel from '@/Components/InputLabel.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import TextInput from '@/Components/TextInput.vue';
+    import { Link, useForm, usePage } from '@inertiajs/vue3';
+    import { ref } from 'vue'
 
-defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+    defineProps({
+        mustVerifyEmail: {
+            type: Boolean,
+        },
+        status: {
+            type: String,
+        },
+    });
 
-const user = usePage().props.auth.user;
+    const user = usePage().props.auth.user;
 
-const form = useForm({
-    name: user.name,
-    email: user.email,
-});
+    const form = useForm({
+        photo: null,
+        remove_photo: false,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+    });
+
+    function submitForm() {
+        form.post(route('profile.update'))
+    }
+
+    const preview = ref(usePage().props.photo_url)
+
+    function previewImage(event) {
+
+        let input = event.target;
+        if (input.files.length) {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                preview.value = e.target.result;
+            }
+            form.photo = input.files[0];
+            reader.readAsDataURL(input.files[0]);
+            form.remove_photo = false
+        }
+    }
+
+    function browseFile() {
+        document.getElementById("photo").click()
+    }
+
+    function resetFile() {
+        form.photo = null
+        preview.value = null
+        form.remove_photo = true
+    }
 </script>
 
 <template>
@@ -32,7 +66,56 @@ const form = useForm({
             </p>
         </header>
 
-        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
+        <form @submit.prevent="submitForm()" class="mt-6 space-y-6" enctype="multipart/form-data">
+            <div class="md:grid md:grid-cols-2 md:gap-x-6 space-y-6 md:space-y-0">
+                <div>
+                    <InputLabel for="photo" value="Photo" class="mb-1" />
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        @input="previewImage"
+                        id="photo"
+                        name="photo"
+                        hidden
+                    >
+
+                    <div v-if="preview" class="mb-2">
+                        <img :src="preview" class="w-44 h-44 object-cover rounded-full border-4 border-gray-300" />
+                        <div v-if="!!form.photo" class="text-sm text-gray-500">
+                            <p class="mb-0">File name: {{ form.photo.name }}</p>
+                            <p class="mb-0">Size: {{ (form.photo.size/1024).toFixed(2) }}KB</p>
+                        </div>
+                    </div>
+
+                    <div v-else class="mb-3">
+                        <div class="w-44 h-44 rounded-full bg-green-200 flex justify-center items-center border-4 border-gray-300 text-7xl text-green-700">
+                            {{ usePage().props.auth.user.name[0] }}
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button
+                            @click="browseFile()"
+                            type="button"
+                            class="h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-3 text-sm"
+                        >
+                            Browse File
+                        </button>
+                        <button
+                            v-if="preview"
+                            @click="resetFile()"
+                            type="button"
+                            class="h-8 bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 text-sm"
+                        >
+                            Remove
+                        </button>
+                    </div>
+
+                    <InputError class="mt-2" :message="form.errors.photo" />
+                </div>
+            </div>
+
             <div>
                 <InputLabel for="name" value="Name" />
 
@@ -47,6 +130,21 @@ const form = useForm({
                 />
 
                 <InputError class="mt-2" :message="form.errors.name" />
+            </div>
+
+            <div>
+                <InputLabel for="username" value="Username" />
+
+                <TextInput
+                    id="username"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.username"
+                    required
+                    autocomplete="username"
+                />
+
+                <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
             <div>

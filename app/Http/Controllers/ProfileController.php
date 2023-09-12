@@ -18,9 +18,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $photo_url = $request->user()->getFirstMediaUrl('profile_photos');
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'photo_url' => $photo_url,
         ]);
     }
 
@@ -29,7 +32,26 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        // dd($request->all());
         $request->user()->fill($request->validated());
+
+        // Remove photo
+        if ($request->remove_photo) {
+
+            $media = $request->user()->getFirstMedia('profile_photos');
+
+            if ($media) {
+
+                $media->delete();
+            }
+        }
+
+        // Add photo
+        if ($request->photo) {
+            $request->user()
+                ->addMedia($request->photo)
+                ->toMediaCollection('profile_photos');
+        }
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
