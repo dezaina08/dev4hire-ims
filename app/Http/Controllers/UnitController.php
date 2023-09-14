@@ -5,24 +5,21 @@ namespace App\Http\Controllers;
 use Throwable;
 use App\Models\Unit;
 use Inertia\Inertia;
-use App\Models\Product;
-use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
+use App\Http\Requests\StoreUnitRequest;
+use App\Http\Requests\UpdateUnitRequest;
 
-class ProductController extends Controller
+class UnitController extends Controller
 {
-    private $tableName = 'products';
+    private $tableName = 'units';
 
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        // dd($this->getData($request));
-        return Inertia::render('Product/Index', [
+        return Inertia::render('Unit/Index', [
             'response' => $this->getData($request),
             'search' => $request->search ?? '',
             'order' => [
@@ -37,14 +34,12 @@ class ProductController extends Controller
      */
     private function getData($request)
     {
-        // Eager load
-        $query = Product::with('category', 'unit', 'media')
-        // Order/Sort
-        ->orderBy($this->tableName . '.' . ($request->orderBy ?? 'id'), $request->orderType ?? 'desc')
-        // Search
+        $query = Unit::orderBy($this->tableName . '.' . ($request->orderBy ?? 'id'), $request->orderType ?? 'desc')
+
         ->when($request->search != '', function ($query) use ($request) {
                 return $query->orWhere($this->tableName . '.name', 'like', '%' . $request->search . '%');
         })
+
         ->paginate($request->perPage ?? 10);
 
         return $query;
@@ -55,30 +50,20 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
-        $units = Unit::all();
-        return Inertia::render('Product/Create', [
-            'categories' => $categories,
-            'units' => $units,
+        return Inertia::render('Unit/Create', [
+            //
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreUnitRequest $request)
     {
-        $validated = $request->safe()->except(['photo']);
+        $validated = $request->validated();
         DB::beginTransaction();
         try {
-            $product = Product::create($validated);
-
-            // Add photo
-            if ($request->photo) {
-                $product->addMedia($request->photo)
-                    ->toMediaCollection('product_photos');
-            }
-
+            Unit::create($validated);
             DB::commit();
             return back();
         } catch (Throwable $e) {
@@ -90,51 +75,30 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Unit $unit)
     {
-        $product->load('category', 'unit');
-        return Inertia::render('Product/Show', [
-            'model' => $product,
-        ]);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(Unit $unit)
     {
-        $categories = Category::all();
-        $units = Unit::all();
-        return Inertia::render('Product/Edit', [
-            'model' => $product,
-            'categories' => $categories,
-            'units' => $units,
+        return Inertia::render('Unit/Edit', [
+            'model' => $unit
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateUnitRequest $request, Unit $unit)
     {
         $validated = $request->validated();
         DB::beginTransaction();
         try {
-            $product->update($validated);
-
-             // Remove photo
-            if ($request->remove_photo) {
-                $media = $product->getFirstMedia('product_photos');
-                if ($media) {
-                    $media->delete();
-                }
-            }
-
-            // Add photo
-            if ($request->photo) {
-                $product->addMedia($request->photo)
-                    ->toMediaCollection('product_photos');
-            }
+            $unit->update($validated);
             DB::commit();
             return back();
         } catch (Throwable $e) {
@@ -151,7 +115,7 @@ class ProductController extends Controller
         if(!empty($request->id_array) && is_array($request->id_array)) {
             DB::beginTransaction();
             try {
-                Product::destroy($request->id_array);
+                Unit::destroy($request->id_array);
                 DB::commit();
                 return back();
             } catch (Throwable $e) {

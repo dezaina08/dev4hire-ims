@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
@@ -11,7 +13,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,26 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'photo' => [
+                'nullable',
+                File::image()
+                ->max(5 * 1024),
+            ],
+            'name' => [
+                'required',
+                'max:50',
+                Rule::unique('products')->ignore($this->id)
+            ],
+            'product_code' => [
+                'required',
+                'max:50',
+                Rule::unique('products')->ignore($this->id)
+            ],
+            'buying_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'category_id' => 'required|integer|exists:categories,id',
+            'unit_id' => 'required|integer|exists:units,id',
+            'stock' => 'required|integer',
         ];
     }
 }

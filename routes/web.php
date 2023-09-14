@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UnitController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +42,16 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
 
     Route::resources([
 
+
+        'categories' => CategoryController::class,
+        'units' => UnitController::class,
+        'products' => ProductController::class,
         'users' => UserController::class,
     ]);
+
+    Route::get('/products-list/{category_id}', function (string $category_id) {
+        return ProductService::getProducts($category_id);
+    })->name('products-list');
 });
 
 require __DIR__.'/auth.php';

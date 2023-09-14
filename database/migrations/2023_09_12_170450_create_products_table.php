@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Unit;
+use App\Models\Category;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -13,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 100);
+            $table->string('product_code', 50);
+            $table->decimal('buying_price', 11);
+            $table->decimal('selling_price', 11);
+            $table->foreignIdFor(Category::class);
+            $table->foreignIdFor(Unit::class);
+            $table->integer('stock');
             $table->timestamps();
         });
     }
