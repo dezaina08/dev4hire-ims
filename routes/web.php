@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
         'units' => UnitController::class,
         'products' => ProductController::class,
         'users' => UserController::class,
+        'suppliers' => SupplierController::class,
     ]);
 
     Route::get('/products-list/{category_id}', function (string $category_id) {
