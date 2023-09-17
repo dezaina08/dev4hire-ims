@@ -13,6 +13,7 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
         'users' => UserController::class,
         'suppliers' => SupplierController::class,
         'purchases' => PurchaseController::class,
+        'customers' => CustomerController::class,
     ]);
 
     Route::get('/products-list/{category_id}', function (string $category_id) {
