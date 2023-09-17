@@ -158,6 +158,69 @@
                                                     <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200">
                                                         <li>
                                                             <Link
+                                                                href="/purchases"
+                                                                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg hover:bg-gray-100 group"
+                                                            >
+                                                                <ShoppingBagIcon class="h-6 w-6 text-gray-600 transition duration-75 group-hover:text-gray-900" />
+                                                                <span class="ml-3">Purchase Order</span>
+                                                            </Link>
+                                                        </li>
+                                                    </ul>
+
+                                                    <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200">
+                                                        <li>
+                                                            <Link
+                                                                href="/customers"
+                                                                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg hover:bg-gray-100 group"
+                                                            >
+                                                                <ShoppingBagIcon class="h-6 w-6 text-gray-600 transition duration-75 group-hover:text-gray-900" />
+                                                                <span class="ml-3">Customers</span>
+                                                            </Link>
+                                                        </li>
+                                                        <li>
+                                                            <Link
+                                                                href="/suppliers"
+                                                                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg hover:bg-gray-100 group"
+                                                            >
+                                                                <ShoppingBagIcon class="h-6 w-6 text-gray-600 transition duration-75 group-hover:text-gray-900" />
+                                                                <span class="ml-3">Suppliers</span>
+                                                            </Link>
+                                                        </li>
+                                                    </ul>
+
+                                                    <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200">
+                                                        <li>
+                                                            <Link
+                                                                href="/products"
+                                                                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg hover:bg-gray-100 group"
+                                                            >
+                                                                <ShoppingBagIcon class="h-6 w-6 text-gray-600 transition duration-75 group-hover:text-gray-900" />
+                                                                <span class="ml-3">Products</span>
+                                                            </Link>
+                                                        </li>
+                                                        <li>
+                                                            <Link
+                                                                href="/categories"
+                                                                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg hover:bg-gray-100 group"
+                                                            >
+                                                                <TagIcon class="h-6 w-6 text-gray-600 transition duration-75 group-hover:text-gray-900" />
+                                                                <span class="ml-3">Categories</span>
+                                                            </Link>
+                                                        </li>
+                                                        <li>
+                                                            <Link
+                                                                href="/units"
+                                                                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg hover:bg-gray-100 group"
+                                                            >
+                                                                <TagIcon class="h-6 w-6 text-gray-600 transition duration-75 group-hover:text-gray-900" />
+                                                                <span class="ml-3">Units</span>
+                                                            </Link>
+                                                        </li>
+                                                    </ul>
+
+                                                    <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200">
+                                                        <li>
+                                                            <Link
                                                                 href="/products"
                                                                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg hover:bg-gray-100 group"
                                                             >
@@ -250,13 +313,7 @@
         {
             href: '/purchases',
             route: '/purchases',
-            title: 'Purchases',
-            icon: TruckIcon,
-        },
-        {
-            href: '/purchases/approved',
-            route: '/purchases/approved',
-            title: 'Approved Purchases',
+            title: 'Purchase Order',
             icon: TruckIcon,
         },
     ]
