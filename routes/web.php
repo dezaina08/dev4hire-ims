@@ -1,14 +1,18 @@
 <?php
 
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Services\API\ProductService;
+use App\Services\API\SupplierService;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\PurchaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,10 +53,15 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
         'products' => ProductController::class,
         'users' => UserController::class,
         'suppliers' => SupplierController::class,
+        'purchases' => PurchaseController::class,
     ]);
 
     Route::get('/products-list/{category_id}', function (string $category_id) {
         return ProductService::getProducts($category_id);
+    })->name('products-list');
+
+    Route::get('/search-suppliers', function (Request $request) {
+        return SupplierService::searchSuppliers($request->search);
     })->name('products-list');
 });
 
