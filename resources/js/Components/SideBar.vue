@@ -25,6 +25,21 @@
 
                 <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200">
                     <li
+                        v-for="item in thirdGroupLinks"
+                    >
+                        <Link
+                            :href="item.href"
+                            class="flex items-center p-2 text-base font-medium rounded-lg group"
+                            :class="[$page.url.startsWith(item.route) ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'text-gray-900 hover:bg-gray-100']"
+                        >
+                            <component :is="item.icon" class="h-6 w-6 transition duration-75"></component>
+                            <span class="ml-3">{{ item.title }}</span>
+                        </Link>
+                    </li>
+                </ul>
+
+                <ul class="pt-5 mt-5 space-y-2 border-t border-gray-200">
+                    <li
                         v-for="item in fourthGroupLinks"
                     >
                         <Link
@@ -196,8 +211,21 @@
 </template>
 
 <script setup>
-    import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
-    import { XMarkIcon, ShoppingBagIcon, ShoppingCartIcon, PresentationChartBarIcon, TagIcon, UsersIcon } from '@heroicons/vue/24/outline'
+    import {
+        Dialog,
+        DialogPanel,
+        TransitionChild,
+        TransitionRoot
+    } from '@headlessui/vue'
+    import {
+        XMarkIcon,
+        ShoppingBagIcon,
+        ShoppingCartIcon,
+        PresentationChartBarIcon,
+        TagIcon,
+        UsersIcon,
+        TruckIcon,
+    } from '@heroicons/vue/24/outline'
     import { useSidebarStore } from '@/stores/sidebar'
     import { Link } from '@inertiajs/vue3';
 
@@ -216,6 +244,21 @@
             title: 'POS',
             icon: ShoppingCartIcon,
         }
+    ]
+
+    const thirdGroupLinks = [
+        {
+            href: '/purchases',
+            route: '/purchases',
+            title: 'Purchases',
+            icon: TruckIcon,
+        },
+        {
+            href: '/purchases/approved',
+            route: '/purchases/approved',
+            title: 'Approved Purchases',
+            icon: TruckIcon,
+        },
     ]
 
     const fourthGroupLinks = [
@@ -266,9 +309,9 @@
 <style lang="scss" scoped>
     .aside-md {
         &::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+            // -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
             border-radius: 10px;
-            background-color: #F5F5F5;
+            background-color: #ffffff;
         }
         &::-webkit-scrollbar {
             width: 8px;
@@ -277,7 +320,7 @@
         &::-webkit-scrollbar-thumb {
             border-radius: 10px;
             -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.1);
-            background-color: #e7e7e7;
+            background-color: #f5f5f5;
         }
     }
 </style>

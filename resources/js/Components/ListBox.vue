@@ -7,7 +7,12 @@
         <div class="relative mt-1">
             <ListboxButton class="relative w-full cursor-default rounded-md border border-gray-300 bg-white pl-3 pr-10 text-left shadow-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 sm:text-sm h-10">
                 <span class="flex items-center">
-                    <span class="block truncate">{{ selected.name }}</span>
+                    <span
+                        class="block truncate"
+                        :class="[selected.id == null ? 'text-gray-400' : '']"
+                    >
+                        {{ selected.name }}
+                    </span>
                 </span>
                 <span class="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                     <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -23,7 +28,12 @@
                         :value="item"
                         v-slot="{ active, selected }"
                     >
-                        <li :class="[active ? 'text-white bg-blue-600' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
+                        <li
+                            :class="[
+                                active ? 'text-white bg-blue-600' : '', 'relative cursor-default select-none py-2 pl-3 pr-9',
+                                selected ? 'bg-blue-100 text-blue-700' : 'text-gray-900'
+                                ]"
+                        >
                             <div class="flex items-center">
                                 <span :class="[selected ? 'font-semibold' : 'font-normal', 'block truncate']">{{ item.name }}</span>
                             </div>
@@ -62,7 +72,7 @@
     const initalItem = [
         {
             id: null,
-            name: 'Select',
+            name: 'Select an option',
         }
     ]
 
@@ -87,8 +97,8 @@
     //     }
     // })
 
-    // watch(() => _.cloneDeep(props.resetIndex), (newValue, oldValue) => {
-    //     selected.value = listboxItems.value[0]
-    //     emit('update:resetIndex', false)
-    // })
+    watch(() => JSON.parse(JSON.stringify(props.resetIndex)), (newValue, oldValue) => {
+        selected.value = listboxItems.value[0]
+        emit('update:resetIndex', false)
+    })
 </script>
