@@ -7,6 +7,8 @@ use App\Models\Unit;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Purchase;
+use App\Models\PurchaseItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreProductRequest;
@@ -92,7 +94,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('category', 'unit');
+        $product->load('category', 'unit', 'purchase_items.purchase.supplier');
         return Inertia::render('Product/Show', [
             'model' => $product,
         ]);

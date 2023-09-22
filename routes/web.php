@@ -47,8 +47,6 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
     })->name('dashboard');
 
     Route::resources([
-
-
         'categories' => CategoryController::class,
         'units' => UnitController::class,
         'products' => ProductController::class,
