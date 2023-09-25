@@ -2,6 +2,7 @@
 
 use App\Models\Unit;
 use App\Models\Category;
+use App\Models\Subcategory;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -20,8 +21,10 @@ return new class extends Migration
             $table->decimal('buying_price', 11);
             $table->decimal('selling_price', 11);
             $table->foreignIdFor(Category::class);
+            $table->foreignIdFor(Subcategory::class);
             $table->foreignIdFor(Unit::class);
             $table->integer('stock');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

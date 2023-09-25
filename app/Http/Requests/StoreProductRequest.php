@@ -29,13 +29,15 @@ class StoreProductRequest extends FormRequest
                 File::image()
                 ->max(5 * 1024),
             ],
-            'name' => 'required|max:50|unique:units',
+            'name' => 'required|max:50|unique:products',
             'product_code' => 'required|max:50|unique:products',
             'buying_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
             'category_id' => 'required|integer|exists:categories,id',
+            'subcategory_id' => 'required|integer|exists:subcategories,id',
             'unit_id' => 'required|integer|exists:units,id',
             'stock' => 'required|integer',
+            'description' => 'nullable',
         ];
     }
 

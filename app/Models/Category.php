@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
@@ -17,13 +18,41 @@ class Category extends Model
      */
     protected $fillable = [
         'name',
+        'description',
     ];
 
     /**
-     * Get the product.
+     * The accessors to append to the model's array form.
+     *
+     * @var array
      */
-    public function product(): HasMany
+    protected $appends = ['created_at_date', 'updated_at_date'];
+
+    /**
+     * Get created at.
+     */
+    protected function createdAtDate(): Attribute
     {
-        return $this->hasMany(Product::class);
+        return Attribute::make(
+            get: fn () => $this->created_at ? $this->created_at->diffForHumans():  '',
+        );
+    }
+
+    /**
+     * Get updated at.
+     */
+    protected function updatedAtDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->updated_at ? $this->updated_at->diffForHumans() : '',
+        );
+    }
+
+    /**
+     * Get the subcategories.
+     */
+    public function subcategories(): HasMany
+    {
+        return $this->hasMany(Subcategory::class);
     }
 }

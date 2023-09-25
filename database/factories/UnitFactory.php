@@ -18,6 +18,7 @@ class UnitFactory extends Factory
     {
         return [
             'name' => fake()->word(),
+            'description' => fake()->paragraph(),
         ];
     }
 }

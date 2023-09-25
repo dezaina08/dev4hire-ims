@@ -53,6 +53,9 @@
                             {{ item.category.name }}
                         </td>
                         <td class="px-4 py-3 font-medium text-gray-700">
+                            {{ item.subcategory.name }}
+                        </td>
+                        <td class="px-4 py-3 font-medium text-gray-700">
                             {{ item.unit.name }}
                         </td>
                         <td class="px-4 py-3 font-medium text-gray-700">
@@ -163,7 +166,12 @@ const tableHeader = ref([
     {
         title: 'Category',
         class: 'px-4 py-3',
-        column: 'category_id'
+        column: null
+    },
+    {
+        title: 'Subcategory',
+        class: 'px-4 py-3',
+        column: null
     },
     {
         title: 'Unit',

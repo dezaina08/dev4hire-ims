@@ -14,16 +14,16 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (range(1, 1000) as $index) {
-            Product::factory()
-            ->create([
-                'product_code' => IdGenerator::generate([
-                    'table' => 'products',
-                    'field' => 'product_code',
-                    'length' => 8,
-                    'prefix' => 'PC-'
-                ]),
-            ]);
-        }
+        // foreach (range(1, 1000) as $index) {
+        //     Product::factory()
+        //     ->create([
+        //         'product_code' => IdGenerator::generate([
+        //             'table' => 'products',
+        //             'field' => 'product_code',
+        //             'length' => 8,
+        //             'prefix' => 'PC-'
+        //         ]),
+        //     ]);
+        // }
     }
 }

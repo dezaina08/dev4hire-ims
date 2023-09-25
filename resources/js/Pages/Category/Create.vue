@@ -48,6 +48,22 @@
                             <InputError class="mt-1" :message="form.errors.name" />
                         </div>
                     </div>
+                    <div class="grid gap-4 md:grid-cols-2 sm:gap-6 mb-5">
+                        <div class="">
+                            <InputLabel
+                                for="description"
+                                value="Description"
+                            />
+                            <TextareaInput
+                                id="description"
+                                class="mt-1 block w-full"
+                                v-model="form.description"
+                                placeholder="Type category description"
+                                rows="4"
+                            />
+                            <InputError class="mt-1" :message="form.errors.description" />
+                        </div>
+                    </div>
                     <div class="flex flex-col md:flex-row gap-3 md:gap-2">
                         <PrimaryButton :disabled="form.processing">
                             Save
@@ -70,6 +86,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { TagIcon } from '@heroicons/vue/24/solid'
 import Breadcrumb from '@/Components/Breadcrumb.vue'
 import TextInput from '@/Components/TextInput.vue'
+import TextareaInput from '@/Components/TextareaInput.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import DynamicLink from '@/Components/DynamicLink.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -82,7 +99,8 @@ const url = 'categories'
 const pageTitle = 'Create Category'
 
 const form = useForm({
-    name: ''
+    name: '',
+    description: '',
 })
 
 let submitForm = () => {

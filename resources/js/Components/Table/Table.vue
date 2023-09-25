@@ -85,6 +85,7 @@
             :from="props.response.from ?? 0"
             :to="props.response.to ?? 0"
             :total="props.response.total ?? 0"
+            :maxVisibleButtons="props.response.last_page > 7 ? 7 : props.response.last_page"
             :url="props.url"
             :search="search"
             :orderBy="orderBy"

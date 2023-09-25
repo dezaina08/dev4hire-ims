@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Unit;
-use App\Models\Category;
-use App\Models\Purchase;
-use App\Models\PurchaseItem;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -30,8 +26,10 @@ class Product extends Model implements HasMedia
         'buying_price',
         'selling_price',
         'category_id',
+        'subcategory_id',
         'unit_id',
-        'stock'
+        'stock',
+        'description',
     ];
 
     /**
@@ -39,7 +37,11 @@ class Product extends Model implements HasMedia
      *
      * @var array
      */
-    protected $appends = ['product_photo'];
+    protected $appends = [
+        'product_photo',
+        'created_at_date',
+        'updated_at_date',
+    ];
 
      /**
      * Set single file collection
@@ -70,11 +72,39 @@ class Product extends Model implements HasMedia
     }
 
     /**
+     * Get the subcategory.
+     */
+    public function subcategory(): BelongsTo
+    {
+        return $this->belongsTo(Subcategory::class);
+    }
+
+    /**
      * Get the unit.
      */
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    /**
+     * Get created at.
+     */
+    protected function createdAtDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->created_at ? $this->created_at->diffForHumans():  '',
+        );
+    }
+
+    /**
+     * Get updated at.
+     */
+    protected function updatedAtDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->updated_at ? $this->updated_at->diffForHumans() : '',
+        );
     }
 
     /**
@@ -85,6 +115,9 @@ class Product extends Model implements HasMedia
         return $this->hasMany(PurchaseItem::class);
     }
 
+    /**
+     * Get the purchases.
+     */
     public function purchases(): HasManyThrough
     {
         return $this->hasManyThrough(

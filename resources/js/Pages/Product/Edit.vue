@@ -120,14 +120,35 @@
                                         <InputLabel
                                             value="Category"
                                         />
-                                        <ListBox
+                                        <Combobox
                                             id="category_id"
-                                            :items="categories"
-                                            :model-value="form.category_id"
-                                            v-on:update:model-value="form.category_id = $event.id"
+                                            ajaxUrl="/search-category?search="
+                                            v-on:update:model-value="updateCategoryId($event)"
+                                            class="mt-1"
+                                            required
+                                            :defaultSelected="props.category"
                                         />
                                         <InputError class="mt-1" :message="form.errors.category_id" />
                                     </div>
+                                    <div class="">
+                                        <InputLabel
+                                            value="Subcategory"
+                                        />
+                                        <Combobox
+                                            id="category_id"
+                                            :ajaxUrl="'/search-subcategory?category_id=' + form.category_id + '&search='"
+                                            v-on:update:model-value="form.subcategory_id = !!$event ? $event.id : ''"
+                                            class="mt-1"
+                                            required
+                                            :disabled="!form.category_id"
+                                            :resetIndex="resetSubcategoryIndex"
+                                            v-on:update:resetIndex="resetSubcategoryIndex = $event"
+                                            :defaultSelected="props.subcategory"
+                                        />
+                                        <InputError class="mt-1" :message="form.errors.subcategory_id" />
+                                    </div>
+                                </div>
+                                <div class="grid gap-4 md:grid-cols-2 sm:gap-6 mb-5">
                                     <div class="">
                                         <InputLabel
                                             value="Unit"
@@ -193,6 +214,23 @@
                                         <InputError class="mt-1" :message="form.errors.stock" />
                                     </div>
                                 </div>
+                                <div class="grid gap-4 sm:gap-6 mb-5">
+                                    <div class="">
+                                        <InputLabel
+                                            for="description"
+                                            value="Description"
+                                        />
+                                        <TextareaInput
+                                            id="description"
+                                            type="number"
+                                            class="mt-1 block w-full"
+                                            v-model="form.description"
+                                            placeholder="Description"
+                                            rows="4"
+                                        />
+                                        <InputError class="mt-1" :message="form.errors.description" />
+                                    </div>
+                                </div>
                                 <div class="flex flex-col md:flex-row gap-3 md:gap-2">
                                     <PrimaryButton :disabled="form.processing">
                                         Save
@@ -218,14 +256,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { ShoppingBagIcon } from '@heroicons/vue/24/solid'
 import Breadcrumb from '@/Components/Breadcrumb.vue'
 import TextInput from '@/Components/TextInput.vue'
+import TextareaInput from '@/Components/TextareaInput.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import DynamicLink from '@/Components/DynamicLink.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Swal from 'sweetalert2'
 import { router } from '@inertiajs/vue3'
 import InputError from '@/Components/InputError.vue'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import ListBox from '@/Components/ListBox.vue'
+import Combobox from '@/Components/Combobox.vue'
 
 const moduleName = 'Products'
 const url = 'products'
@@ -233,9 +273,12 @@ const pageTitle = 'Update Product'
 
 const props = defineProps({
     model: Object,
-    categories: Array,
     units: Array,
+    category: Object,
+    subcategory: Object,
 });
+
+const resetSubcategoryIndex = ref(false)
 
 const form = useForm({
     id: props.model.id,
@@ -244,11 +287,12 @@ const form = useForm({
     name: props.model.name,
     product_code: props.model.product_code,
     category_id: props.model.category_id.toString(),
+    subcategory_id: props.model.subcategory_id.toString(),
     unit_id: props.model.unit_id.toString(),
     buying_price: props.model.buying_price,
     selling_price: props.model.selling_price,
     stock: props.model.stock.toString(),
-
+    description: props.model.description,
     // Form method spoofing
     _method: 'put',
 })
@@ -293,6 +337,17 @@ let resetFile = () => {
     form.photo = null
     preview.value = null
     form.remove_photo = true
+}
+
+let updateCategoryId = (event) => {
+    if (!!event) {
+        form.category_id = event.id
+    } else {
+        form.category_id = ''
+    }
+
+    form.subcategory_id = ''
+    resetSubcategoryIndex.value = true
 }
 </script>
 <style lang="">

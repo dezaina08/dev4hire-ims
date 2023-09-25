@@ -68,11 +68,13 @@
                                             disabled />
                                     </div>
                                     <div class="">
-                                        <InputLabel for="unit_id" value="Unit" />
-                                        <TextInput id="unit_id" type="text" class="mt-1 block w-full h-10 bg-gray-100"
-                                            v-model="model.unit.name" required autocomplete="off" placeholder="Unit"
-                                            disabled />
+                                        <InputLabel for="subcategory_id" value="Subcategory" />
+                                        <TextInput id="subcategory_id" type="text"
+                                            class="mt-1 block w-full h-10 bg-gray-100" v-model="model.subcategory.name"
+                                            required autocomplete="off" placeholder="Subcategory" disabled />
                                     </div>
+
+
                                 </div>
                                 <div class="grid gap-4 md:grid-cols-2 sm:gap-6 mb-5">
                                     <div class="">
@@ -95,6 +97,12 @@
                                             v-model="model.stock" required autocomplete="off" placeholder="Stock"
                                             disabled />
                                     </div>
+                                    <div class="">
+                                        <InputLabel for="unit_id" value="Unit" />
+                                        <TextInput id="unit_id" type="text" class="mt-1 block w-full h-10 bg-gray-100"
+                                            v-model="model.unit.name" required autocomplete="off" placeholder="Unit"
+                                            disabled />
+                                    </div>
                                 </div>
                                 <div class="flex flex-col md:flex-row gap-3 md:gap-2">
                                     <DynamicLink :href="'/' + url + '/' + model.id.toString() + '/edit'" type="primary">
@@ -110,6 +118,7 @@
                 </div>
             </form>
             <div class="grid gap-y-4 lg:gap-y-0 lg:gap-x-4 mt-4">
+
                 <Card>
                     <template #card-header>
                         <h3 class="text-lg font-semibold text-gray-900">

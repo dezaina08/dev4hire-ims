@@ -2,18 +2,24 @@
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Services\API\ProductService;
+use App\Services\API\CategoryService;
+use App\Services\API\SupplierService;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
-use App\Services\API\ProductService;
-use App\Services\API\SupplierService;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UserController;
+use App\Services\API\SubcategoryService;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SubcategoryController;
+use App\Http\Controllers\ProductsByCategoryController;
+use App\Http\Controllers\ProductsBySubcategoryController;
+use App\Http\Controllers\SubcategoriesByCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,19 +56,36 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
         'categories' => CategoryController::class,
         'units' => UnitController::class,
         'products' => ProductController::class,
-        'users' => UserController::class,
         'suppliers' => SupplierController::class,
-        'purchases' => PurchaseController::class,
         'customers' => CustomerController::class,
+        'users' => UserController::class,
+        'purchases' => PurchaseController::class,
+        'subcategories-by-category' => SubcategoriesByCategoryController::class,
+        'products-by-category' => ProductsByCategoryController::class,
+        'products-by-subcategory' => ProductsBySubcategoryController::class,
+        'subcategories' => SubcategoryController::class,
     ]);
 
+    // API routes
     Route::get('/products-list/{category_id}', function (string $category_id) {
         return ProductService::getProducts($category_id);
     })->name('products-list');
 
     Route::get('/search-suppliers', function (Request $request) {
         return SupplierService::searchSuppliers($request->search);
-    })->name('products-list');
+    })->name('search-suppliers');
+
+    Route::get('/search-products', function (Request $request) {
+        return ProductService::searchSuppliers($request->search);
+    })->name('search-products');
+
+    Route::get('/search-category', function (Request $request) {
+        return CategoryService::searchCategory($request->search);
+    })->name('search-category');
+
+    Route::get('/search-subcategory', function (Request $request) {
+        return SubcategoryService::searchSubcategory($request->category_id, $request->search);
+    })->name('search-subcategory');
 });
 
 require __DIR__.'/auth.php';

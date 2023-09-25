@@ -22,44 +22,74 @@
                     />
                 </div>
             </div>
-            <div class="py-4 lg:py-6 p-4 bg-white rounded-lg shadow">
-                <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        Details
-                    </h3>
-                </div>
-                <form @submit.prevent="submitForm()">
-                    <div class="grid gap-4 md:grid-cols-2 sm:gap-6 mb-4">
-                        <div class="">
-                            <InputLabel
-                                for="name"
-                                value="Name"
-                            />
-                            <TextInput
-                                id="name"
-                                type="text"
-                                class="mt-1 block w-full h-10"
-                                v-model="form.name"
-                                required
-                                autofocus
-                                autocomplete="off"
-                                placeholder="Type category name"
-                            />
-                            <InputError class="mt-1" :message="form.errors.name" />
-                        </div>
-                    </div>
-                    <div class="flex flex-col md:flex-row gap-3 md:gap-2">
-                        <PrimaryButton :disabled="form.processing">
-                            Save
-                        </PrimaryButton>
-                        <DynamicLink
-                            :href="'/' + url"
-                            type="secondary"
-                        >
-                            Back
-                        </DynamicLink>
-                    </div>
-                </form>
+            <div class="grid lg:grid-cols-2 gap-y-4 lg:gap-y-0 lg:gap-x-4 mb-4">
+                <Card>
+                    <template #card-header>
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            Details
+                        </h3>
+                    </template>
+                    <template #card-body>
+                        <form @submit.prevent="submitForm()">
+                            <div class="grid gap-4 sm:gap-6 mb-4">
+                                <div class="">
+                                    <InputLabel
+                                        for="name"
+                                        value="Name"
+                                    />
+                                    <TextInput
+                                        id="name"
+                                        type="text"
+                                        class="mt-1 block w-full h-10"
+                                        v-model="form.name"
+                                        required
+                                        autocomplete="off"
+                                        placeholder="Type category name"
+                                    />
+                                    <InputError class="mt-1" :message="form.errors.name" />
+                                </div>
+                            </div>
+                            <div class="grid gap-4 sm:gap-6 mb-4">
+                                <div class="">
+                                    <InputLabel
+                                        for="description"
+                                        value="Description"
+                                    />
+                                    <TextareaInput
+                                        id="description"
+                                        type="text"
+                                        class="mt-1 block w-full"
+                                        v-model="form.description"
+                                        placeholder="Type category description"
+                                        rows="4"
+                                    />
+                                    <InputError class="mt-1" :message="form.errors.description" />
+                                </div>
+                            </div>
+                            <div class="flex flex-col md:flex-row gap-3 md:gap-2">
+                                <PrimaryButton :disabled="form.processing">
+                                    Save
+                                </PrimaryButton>
+                                <DynamicLink
+                                    :href="'/' + url"
+                                    type="secondary"
+                                >
+                                    Back
+                                </DynamicLink>
+                            </div>
+                        </form>
+                    </template>
+                </Card>
+            </div>
+            <div class="grid gap-y-4 lg:gap-y-0 lg:gap-x-4 mb-4">
+                <SubcategoriesTable
+                    :model-id="model.id.toString()"
+                />
+            </div>
+            <div class="grid gap-y-4 lg:gap-y-0 lg:gap-x-4 mb-4">
+                <ProductsTable
+                    :model-id="model.id.toString()"
+                />
             </div>
         </div>
     </AuthenticatedLayout>
@@ -70,12 +100,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { TagIcon } from '@heroicons/vue/24/solid'
 import Breadcrumb from '@/Components/Breadcrumb.vue'
 import TextInput from '@/Components/TextInput.vue'
+import TextareaInput from '@/Components/TextareaInput.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import DynamicLink from '@/Components/DynamicLink.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Swal from 'sweetalert2'
 import { router } from '@inertiajs/vue3'
 import InputError from '@/Components/InputError.vue'
+import Card from '@/Components/Card.vue'
+import SubcategoriesTable from '@/Pages/Category/EditPartials/SubcategoriesTable.vue'
+import ProductsTable from '@/Pages/Category/EditPartials/ProductsTable.vue'
 
 const moduleName = 'Categories'
 const url = 'categories'
@@ -88,6 +122,7 @@ const props = defineProps({
 const form = useForm({
     id: props.model.id,
     name: props.model.name,
+    description: props.model.description,
 })
 
 let submitForm = () => {

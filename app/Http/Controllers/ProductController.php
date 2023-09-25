@@ -7,7 +7,7 @@ use App\Models\Unit;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Purchase;
+use App\Models\Subcategory;
 use App\Models\PurchaseItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +40,7 @@ class ProductController extends Controller
     private function getData($request)
     {
         // Eager load
-        $query = Product::with('category', 'unit', 'media')
+        $query = Product::with('category', 'subcategory', 'unit', 'media')
         // Order/Sort
         ->orderBy($this->tableName . '.' . ($request->orderBy ?? 'id'), $request->orderType ?? 'desc')
         // Search
@@ -94,7 +94,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('category', 'unit', 'purchase_items.purchase.supplier');
+        $product->load('category', 'unit', 'purchase_items.purchase.supplier', 'subcategory');
         return Inertia::render('Product/Show', [
             'model' => $product,
         ]);
@@ -105,12 +105,12 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = Category::all();
         $units = Unit::all();
         return Inertia::render('Product/Edit', [
             'model' => $product,
-            'categories' => $categories,
             'units' => $units,
+            'category' => $product->category,
+            'subcategory' => $product->subcategory,
         ]);
     }
 
