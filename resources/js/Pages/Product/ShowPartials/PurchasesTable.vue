@@ -3,7 +3,7 @@
         <template #card-header>
             <div class="flex justify-between items-center">
                 <h3 class="text-lg font-semibold text-gray-900">
-                    Product List
+                    Purchase History
                 </h3>
             </div>
         </template>
@@ -23,53 +23,24 @@
                         :key="item.id"
                         class="border-b"
                     >
+
                         <td class="px-4 py-3 text-gray-700">
-                            {{ item.id }}
+                            {{ item.purchase.purchase_number }}
                         </td>
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ item.name }}
+                        <td class="px-4 py-3 text-gray-700">
+                            {{ item.purchase.supplier.name }}
                         </td>
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ item.product_code }}
+                        <td class="px-4 py-3 text-gray-700">
+                            {{ item.unit_cost }}
                         </td>
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ item.category.name }}
+                        <td class="px-4 py-3 text-gray-700">
+                            {{ item.quantity}}
                         </td>
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ item.subcategory.name }}
+                        <td class="px-4 py-3 text-gray-700">
+                            {{ item.total }}
                         </td>
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ item.unit.name }}
-                        </td>
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ item.buying_price }}
-                        </td>
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ item.selling_price }}
-                        </td>
-                        <td class="px-4 py-3 font-medium text-gray-700">
-                            {{ item.stock }}
-                        </td>
-                        <td class="text-sm text-gray-700 font-light px-4 py-3 whitespace-nowrap">
-                            <div class="flex gap-2">
-                                <a
-                                    target="_blank"
-                                    :href="'/products/' + item.id + '/edit'"
-                                    class="text-blue-400 hover:text-white transition duration-200 ease-in-out border border-blue-400 hover:border-blue-600 rounded-md py-1 px-1 hover:bg-blue-500"
-                                    title="Edit"
-                                >
-                                    <PencilSquareIcon class="block h-5 w-5" aria-hidden="true" />
-                                </a>
-                                <button
-                                    type="button"
-                                    href="#"
-                                    class="text-red-400 hover:text-white transition duration-200 ease-in-out border border-red-400 hover:border-red-600 rounded-md py-1 px-1 hover:bg-red-500"
-                                    title="Delete"
-                                    @click="confirmDelete(item.id)"
-                                >
-                                    <TrashIcon class="block h-5 w-5" aria-hidden="true" />
-                            </button>
-                            </div>
+                        <td class="px-4 py-3 text-gray-700">
+                            {{ item.purchase.purchase_date }}
                         </td>
                     </tr>
                     <tr
@@ -89,7 +60,7 @@
     </Card>
 </template>
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 import {
     EyeIcon,
     PencilSquareIcon,
@@ -101,7 +72,7 @@ import { ref, onMounted } from 'vue'
 import Swal from 'sweetalert2'
 import Card from '@/Components/Card.vue'
 
-const url = ref('products-by-category')
+const url = ref('purchases-by-product')
 const response = ref(null)
 const search = ref('')
 const order = ref({
@@ -119,58 +90,36 @@ const props = defineProps({
 
 const tableHeader = ref([
 {
-        title: 'ID',
+        title: 'Purchase Number',
         class: 'px-4 py-3',
-        column: 'id'
+        column: 'purchase_number'
     },
     {
-        title: 'Name',
+        title: 'Supplier',
         class: 'px-4 py-3',
-        column: 'name'
+        column: 'supplier'
     },
     {
-        title: 'Product Code',
+        title: 'Unit Cost',
         class: 'px-4 py-3',
-        column: 'product_code'
+        column: 'unit_cost'
     },
     {
-        title: 'Category',
+        title: 'Quantity',
         class: 'px-4 py-3',
-        column: null
+        column: 'quantity'
     },
     {
-        title: 'Subcategory',
+        title: 'Total',
         class: 'px-4 py-3',
-        column: null
+        column: 'total'
     },
     {
-        title: 'Unit',
-        class: 'px-4 py-3',
-        column: null
-    },
-    {
-        title: 'Buying Price',
-        class: 'px-4 py-3',
-        column: 'buying_price'
-    },
-    {
-        title: 'Selling Price',
-        class: 'px-4 py-3',
-        column: 'selling_price'
-    },
-    {
-        title: 'Stock',
-        class: 'px-4 py-3',
-        column: 'stock'
-    },
-    {
-        title: 'Actions',
+        title: 'Purchase Date',
         class: 'px-4 py-3',
         column: null
     },
 ])
-
-const deleteForm = useForm({})
 
 let fetchData = (link = '/' + url.value) => {
     currentUrl.value = link

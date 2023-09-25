@@ -19,6 +19,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\ProductsByCategoryController;
 use App\Http\Controllers\ProductsBySubcategoryController;
+use App\Http\Controllers\PurchasesByProductController;
 use App\Http\Controllers\SubcategoriesByCategoryController;
 
 /*
@@ -60,6 +61,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:admin']], function () {
         'customers' => CustomerController::class,
         'users' => UserController::class,
         'purchases' => PurchaseController::class,
+        'purchases-by-product' => PurchasesByProductController::class,
         'subcategories-by-category' => SubcategoriesByCategoryController::class,
         'products-by-category' => ProductsByCategoryController::class,
         'products-by-subcategory' => ProductsBySubcategoryController::class,

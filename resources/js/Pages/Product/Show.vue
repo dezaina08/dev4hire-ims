@@ -19,7 +19,7 @@
                     ]" :current="pageTitle" />
                 </div>
             </div>
-            <form @submit.prevent="submitForm()" enctype="multipart/form-data">
+            <form class="mb-4" @submit.prevent="submitForm()" enctype="multipart/form-data">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-y-0 lg:gap-x-4">
                     <div class="col-span-1">
                         <div class="py-4 lg:py-6 p-4 bg-white rounded-lg shadow">
@@ -104,6 +104,23 @@
                                             disabled />
                                     </div>
                                 </div>
+                                <div class="grid gap-4 sm:gap-6 mb-5">
+                                    <div class="">
+                                        <InputLabel
+                                            for="description"
+                                            value="Description"
+                                        />
+                                        <TextareaInput
+                                            id="description"
+                                            type="number"
+                                            class="mt-1 block w-full bg-gray-100"
+                                            v-model="model.description"
+                                            placeholder="Description"
+                                            rows="4"
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
                                 <div class="flex flex-col md:flex-row gap-3 md:gap-2">
                                     <DynamicLink :href="'/' + url + '/' + model.id.toString() + '/edit'" type="primary">
                                         Edit
@@ -117,86 +134,24 @@
                     </div>
                 </div>
             </form>
-            <div class="grid gap-y-4 lg:gap-y-0 lg:gap-x-4 mt-4">
-
-                <Card>
-                    <template #card-header>
-                        <h3 class="text-lg font-semibold text-gray-900">
-                            Purchase History
-                        </h3>
-                    </template>
-                    <template #card-body>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left">
-                                <thead class="text-gray-700 uppercase bg-gray-200">
-                                    <tr>
-                                        <th class="px-4 py-3">
-                                            Purchase Number
-                                        </th>
-                                        <th class="px-4 py-3">
-                                            Purchase Date
-                                        </th>
-                                        <th class="px-4 py-3">
-                                            Supplier Name
-                                        </th>
-                                        <th class="px-4 py-3">
-                                            Unit Cost
-                                        </th>
-                                        <th class="px-4 py-3">
-                                            Quantity
-                                        </th>
-                                        <th class="px-4 py-3">
-                                            Total
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="purchase_item in model.purchase_items" :key=purchase_item.id
-                                        class="border-b hover:bg-gray-100">
-
-                                        <td class="px-4 py-3 text-gray-700">
-                                            {{ purchase_item.purchase.purchase_number }}
-                                        </td>
-
-                                        <td class="px-4 py-3 text-gray-700">
-                                            {{ purchase_item.purchase.purchase_date }}
-                                        </td>
-
-                                        <td class="px-4 py-3 text-gray-700">
-                                            {{ purchase_item.purchase.supplier.name }}
-                                        </td>
-
-                                        <td class="px-4 py-3 text-gray-700">
-                                            {{ purchase_item.unit_cost }}
-                                        </td>
-
-                                        <td class="px-4 py-3 text-gray-700">
-                                            {{ purchase_item.quantity }}
-                                        </td>
-
-                                        <td class="px-4 py-3 text-gray-700">
-                                            {{ purchase_item.total }}
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </template>
-                </Card>
+            <div class="grid gap-y-4 lg:gap-y-0 lg:gap-x-4 mb-4">
+                <PurchasesTable
+                    :model-id="model.id.toString()"
+                />
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
 <script setup>
-import { Head } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { ShoppingBagIcon } from '@heroicons/vue/24/solid'
 import Breadcrumb from '@/Components/Breadcrumb.vue'
 import TextInput from '@/Components/TextInput.vue'
+import TextareaInput from '@/Components/TextareaInput.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import DynamicLink from '@/Components/DynamicLink.vue'
-import Card from '@/Components/Card.vue'
+import PurchasesTable from '@/Pages/Product/ShowPartials/PurchasesTable.vue'
 
 const moduleName = 'Products'
 const url = 'products'
@@ -205,6 +160,12 @@ const pageTitle = 'View Product'
 const props = defineProps({
     model: Object,
 });
+
+const form = useForm({
+    id: props.model.id,
+    name: props.model.name,
+    description: props.model.description,
+})
 
 const model = props.model
 // Convert Number to String
