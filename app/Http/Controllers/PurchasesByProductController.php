@@ -32,25 +32,43 @@ class PurchasesByProductController extends Controller
      */
     private function getData($request)
     {
-        $query = PurchaseItem::with('product', 'purchase.supplier')
-
-        ->orderBy($this->tableName . '.' . ($request->orderBy ?? 'id'), $request->orderType ?? 'desc')
-
-        ->where('product_id', $request->model_id)
-
-        ->when($request->search != '', function ($query) use ($request) {
-            return $query->where(function (Builder $groupQuery) use ($request) {
-                $groupQuery
-                    ->where($this->tableName . '.id', 'like', '%' . $request->search . '%')
-                    ->orWhere($this->tableName . '.name', 'like', '%' . $request->search . '%')
-                    ->orWhere($this->tableName . '.product_code', 'like', '%' . $request->search . '%');
+        $query = PurchaseItem::with(['product', 'purchase.supplier'])
+            ->leftJoin('purchases', 'purchase_items.purchase_id', '=', 'purchases.id')
+            ->leftJoin('suppliers', 'purchases.supplier_id', '=', 'suppliers.id') // Join the suppliers table
+            ->where('product_id', $request->model_id)
+            ->when($request->search != '', function ($query) use ($request) {
+                $query->where(function ($groupQuery) use ($request) {
+                    $groupQuery
+                        ->whereHas('purchase', function ($purchaseQuery) use ($request) {
+                            $purchaseQuery->where('purchase_number', 'like', '%' . $request->search . '%');
+                        })
+                        ->orWhereHas('purchase.supplier', function ($supplierQuery) use ($request) {
+                            $supplierQuery->where('name', 'like', '%' . $request->search . '%'); // Reference the supplier name correctly
+                        })
+                        ->orWhereHas('purchase', function ($purchaseQuery) use ($request) {
+                            $purchaseQuery->where('purchase_date', 'like', '%' . $request->search . '%');
+                        });
+                });
             });
-        })
-
-        ->paginate($request->perPage ?? 10);
-
-        return $query;
+    
+        // Sort the query based on the orderBy parameter
+        if ($request->orderBy === 'purchase_number') {
+            $query->orderBy('purchases.purchase_number', $request->orderType ?? 'desc');
+        } elseif ($request->orderBy === 'purchase_date') {
+            $query->orderBy('purchases.purchase_date', $request->orderType ?? 'desc');
+        } elseif ($request->orderBy === 'supplier') {
+            $query->orderBy('suppliers.name', $request->orderType ?? 'desc'); // Reference the supplier name correctly
+        } else {
+            // Default sorting by 'id' or any other column
+            $query->orderBy($this->tableName . '.' . ($request->orderBy ?? 'id'), $request->orderType ?? 'desc');
+        }
+    
+        $result = $query->paginate($request->perPage ?? 10);
+    
+        return $result;
     }
+    
+    
 
     /**
      * Remove the specified resource from storage.

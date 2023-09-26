@@ -94,7 +94,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('category', 'subcategory', 'unit', 'purchase_items.purchase.supplier' );
+        $product->load('category', 'subcategory', 'unit' );
         return Inertia::render('Product/Show', [
             'model' => $product,
         ]);

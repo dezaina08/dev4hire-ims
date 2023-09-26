@@ -8,21 +8,10 @@
             </div>
         </template>
         <template #card-body>
-            <StatelessTable
-                :url="url"
-                :response="response"
-                :table-header="tableHeader"
-                :search="search"
-                :order="order"
-                v-on:updateTable="fetchData($event)"
-            >
+            <StatelessTable :url="url" :response="response" :table-header="tableHeader" :search="search" :order="order"
+                v-on:updateTable="fetchData($event)">
                 <template #tr>
-                    <tr
-                        v-if="response?.data.length"
-                        v-for="item in response.data"
-                        :key="item.id"
-                        class="border-b"
-                    >
+                    <tr v-if="response?.data.length" v-for="item in response.data" :key="item.id" class="border-b">
 
                         <td class="px-4 py-3 text-gray-700">
                             {{ item.purchase.purchase_number }}
@@ -34,7 +23,7 @@
                             {{ item.unit_cost }}
                         </td>
                         <td class="px-4 py-3 text-gray-700">
-                            {{ item.quantity}}
+                            {{ item.quantity }}
                         </td>
                         <td class="px-4 py-3 text-gray-700">
                             {{ item.total }}
@@ -43,14 +32,9 @@
                             {{ item.purchase.purchase_date }}
                         </td>
                     </tr>
-                    <tr
-                        v-else
-                        class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100"
-                    >
-                        <td
-                            :colspan="tableHeader.length"
-                            class="text-sm text-gray-900 font-light px-6 py-3 whitespace-nowrap text-center"
-                        >
+                    <tr v-else class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td :colspan="tableHeader.length"
+                            class="text-sm text-gray-900 font-light px-6 py-3 whitespace-nowrap text-center">
                             No records
                         </td>
                     </tr>
@@ -60,13 +44,7 @@
     </Card>
 </template>
 <script setup>
-import { Link } from '@inertiajs/vue3'
-import {
-    EyeIcon,
-    PencilSquareIcon,
-    TrashIcon,
-    PlusIcon
-} from '@heroicons/vue/24/outline'
+import { Link, useForm } from '@inertiajs/vue3'
 import StatelessTable from '@/Components/Table/StatelessTable.vue'
 import { ref, onMounted } from 'vue'
 import Swal from 'sweetalert2'
@@ -89,7 +67,7 @@ const props = defineProps({
 })
 
 const tableHeader = ref([
-{
+    {
         title: 'Purchase Number',
         class: 'px-4 py-3',
         column: 'purchase_number'
@@ -117,9 +95,11 @@ const tableHeader = ref([
     {
         title: 'Purchase Date',
         class: 'px-4 py-3',
-        column: null
+        column: 'purchase_date'
     },
 ])
+
+const deleteForm = useForm({})
 
 let fetchData = (link = '/' + url.value) => {
     currentUrl.value = link
@@ -131,14 +111,14 @@ let fetchData = (link = '/' + url.value) => {
             }
         }
     )
-    .then((res) => {
-        response.value = res.data.response
-        search.value = res.data.search
-        order.value = res.data.order
-    })
-    .catch(function (error) {
-        console.log(error)
-    })
+        .then((res) => {
+            response.value = res.data.response
+            search.value = res.data.search
+            order.value = res.data.order
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
 }
 
 let confirmDelete = (id) => {
@@ -160,35 +140,35 @@ let confirmDelete = (id) => {
 let deleteItem = (id) => {
 
     let id_array = Array.isArray(id)
-                ? Object.keys(id).map(index => id[index].id)
-                : [id]
+        ? Object.keys(id).map(index => id[index].id)
+        : [id]
 
     deleteForm.transform(() => ({
-            id_array: id_array,
-        }))
+        id_array: id_array,
+    }))
         .delete(
-        route(url.value + '.destroy', id),
-        {
-            preserveScroll: true,
-            onSuccess: () => {
-                fetchData(currentUrl.value)
-                Swal.fire({
-                    title: 'Deleted successfully',
-                    // text: "Deleted successfully.",
-                    icon: 'success',
-                    confirmButtonColor: '#16A34A',
-                })
-            },
-            onError: (error) => {
-                Swal.fire({
-                    title: 'Something went wrong',
-                    text: "Please refresh the page.",
-                    icon: 'error',
-                    confirmButtonColor: '#d33',
-                })
-            },
-        }
-    )
+            route(url.value + '.destroy', id),
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    fetchData(currentUrl.value)
+                    Swal.fire({
+                        title: 'Deleted successfully',
+                        // text: "Deleted successfully.",
+                        icon: 'success',
+                        confirmButtonColor: '#16A34A',
+                    })
+                },
+                onError: (error) => {
+                    Swal.fire({
+                        title: 'Something went wrong',
+                        text: "Please refresh the page.",
+                        icon: 'error',
+                        confirmButtonColor: '#d33',
+                    })
+                },
+            }
+        )
 }
 
 onMounted(() => {
